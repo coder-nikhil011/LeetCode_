@@ -3,20 +3,24 @@ public:
     int minJumps(vector<int>& nums) {
         int n = nums.size();
 
+        int maxi = *max_element(begin(nums), end(nums));
+
+        vector<bool> isPrime(maxi + 1, true);
+
+        isPrime[0] = isPrime[1] = false;
+
+        for(int i = 2; i * i <= maxi; i++) {
+            if(isPrime[i]) {
+                for(int j = i * i; j <= maxi; j += i) {
+                    isPrime[j] = false;
+                }
+            }
+        }
+
         unordered_map<int, vector<int>> mp;
 
         for(int i=0; i<n; i++){
-            int num = nums[i];
-            
-            for(int div = 2; div*div <= num; div++){
-                if(num % div == 0){
-                    mp[div].push_back(i);
-
-                    while(num % div == 0) num /= div;
-                }
-            }
-
-            if(num > 1) mp[num].push_back(i);
+            mp[nums[i]].push_back(i);
         }
 
         queue<pair<int, int>> q;
@@ -41,14 +45,18 @@ public:
                 q.push({i+1, curr.second + 1});
                 vis[i+1] = true;
             }
-            if(mp.count(nums[i])){
-                for(auto& next_idx:mp[nums[i]]){
-                    if(!vis[next_idx]){
-                        q.push({next_idx, curr.second + 1});
-                        vis[next_idx] = true;
+            if(isPrime[nums[i]]){
+                for(int num = nums[i]; num <= maxi; num += nums[i]){
+                    if(mp.count(num)){
+                        for(auto& next_idx:mp[num]){
+                            if(!vis[next_idx]){
+                                q.push({next_idx, curr.second + 1});
+                                vis[next_idx] = true;
+                            }
+                        }
+                        mp.erase(num);
                     }
                 }
-                mp.erase(nums[i]);
             }
         }
 
