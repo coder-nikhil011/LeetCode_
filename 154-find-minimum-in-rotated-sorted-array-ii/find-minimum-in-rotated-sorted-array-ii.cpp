@@ -7,6 +7,6 @@ public:
             ans = min(ans,nums[i]);
         }
         return ans;
-        
+
     }
 };
