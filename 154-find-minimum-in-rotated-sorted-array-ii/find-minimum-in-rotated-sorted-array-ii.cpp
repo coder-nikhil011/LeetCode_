@@ -2,11 +2,12 @@ class Solution {
 public:
     int findMin(vector<int>& nums) {
         int n = nums.size();
-        int ans = INT_MAX;
+        /*int ans = INT_MAX;
         for(int i= 0 ;i<n;i++){
             ans = min(ans,nums[i]);
         }
-        return ans;
+        return ans;*/
+        return *min_element(begin(nums), end(nums));
 
     }
 };
