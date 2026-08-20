@@ -5,7 +5,6 @@ public:
         int i = 0;
         vector<int>arr1;
         vector<int>arr2;
-        vector<int>ans;
 
         arr1.push_back(nums[0]);
         arr2.push_back(nums[1]);
