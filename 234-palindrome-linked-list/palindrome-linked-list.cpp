@@ -9,27 +9,44 @@
  * };
  */
 //T.C : O(n)
-//S.C : O(n)
+//S.C : O(1)
 class Solution {
 public:
-    bool isPalindrome(ListNode* head) {
-        vector<int> temp;
+    ListNode* reverseList(ListNode* head) {
+        if(!head || !head->next)
+            return head;
+        
+        ListNode* last = reverseList(head->next);
+        head->next->next = head;
+        head->next = NULL;
+        return last;
+    }
 
-        ListNode* curr = head;
-        while(curr) {
-            temp.push_back(curr->val);
-            curr = curr->next;
+    bool isPalindrome(ListNode* head) {
+        if(!head || !head->next) {
+            return true;
         }
 
-        int i = 0;
-        int j = temp.size()-1;
+        ListNode* slow = head;
+        ListNode* fast = head;
+        ListNode* prev = NULL;
 
-        while(i < j) {
-            if(temp[i] != temp[j]) 
+        while(fast && fast->next) {
+            prev = slow;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        ListNode* revhead = reverseList(slow);
+        prev->next = NULL;
+        
+        while(revhead != NULL && head != NULL) {
+            if(revhead->val != head->val) {
                 return false;
+            }
 
-            i++;
-            j--;
+            revhead = revhead->next;
+            head = head->next;
         }
 
         return true;
