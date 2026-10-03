@@ -12,16 +12,6 @@
 //S.C : O(1)
 class Solution {
 public:
-    ListNode* reverseList(ListNode* head) {
-        if(!head || !head->next)
-            return head;
-        
-        ListNode* last = reverseList(head->next);
-        head->next->next = head;
-        head->next = NULL;
-        return last;
-    }
-
     bool isPalindrome(ListNode* head) {
         if(!head || !head->next) {
             return true;
@@ -31,22 +21,27 @@ public:
         ListNode* fast = head;
         ListNode* prev = NULL;
 
+
         while(fast && fast->next) {
-            prev = slow;
-            slow = slow->next;
             fast = fast->next->next;
+
+            ListNode* temp = slow->next;
+            slow->next = prev;
+            prev = slow;
+            slow = temp;
         }
 
-        ListNode* revhead = reverseList(slow);
-        prev->next = NULL;
+        // If the number of nodes is odd, move slow to the next node
+        if (fast)
+            slow = slow->next;
         
-        while(revhead != NULL && head != NULL) {
-            if(revhead->val != head->val) {
+        while(prev && slow) {
+            if(prev->val != slow->val) {
                 return false;
             }
 
-            revhead = revhead->next;
-            head = head->next;
+            prev = prev->next;
+            slow = slow->next;
         }
 
         return true;
