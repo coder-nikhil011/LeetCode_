@@ -1,53 +1,54 @@
 class Solution {
-public:
-    vector<string> removeInvalidParentheses(string s) {
-        vector<string> ans;
-        unordered_set<string> visited;
-        queue<string> q;
+private:
+    unordered_set<string> st;
+    int n;
 
-        q.push(s);
-        visited.insert(s);
+    void solve(const string& s, int i, string& curr, int count, int& maxLen) {
+        if (count < 0)  //invalid
+            return;
 
-        bool found = false;
-
-        while (!q.empty()) {
-            string curr = q.front();
-            q.pop();
-
-            stack<char> st;
-            bool valid = true;
-
-            for (char c : curr) {
-                if (c == '(')
-                    st.push(c);
-                else if (c == ')') {
-                    if (st.empty()) {
-                        valid = false;
-                        break;
-                    }
-                    st.pop();
+        if (i == n) {
+            if (count == 0) {
+                if (curr.length() > maxLen) {        // found a longer valid string
+                    maxLen = curr.length();
+                    st.clear();
                 }
+                
+                if(curr.length() == maxLen) {
+                    st.insert(curr);
+                }
+                
             }
-
-            if (valid && st.empty()) {
-                ans.push_back(curr);
-                found = true;
-            }
-
-            if (found)
-                continue;
-
-            for (int i = 0; i < curr.size(); i++) {
-                if (curr[i] != '(' && curr[i] != ')')
-                    continue;
-
-                string next = curr.substr(0, i) + curr.substr(i + 1);
-
-                if (visited.insert(next).second)
-                    q.push(next);
-            }
+            return;
         }
 
-        return ans;
+        if (s[i] != '(' && s[i] != ')') {                     // letter: always keep
+            curr.push_back(s[i]);
+            solve(s, i + 1, curr, count, maxLen);
+            curr.pop_back();
+            return;
+        }
+
+        //Do
+        curr.push_back(s[i]);
+
+        //Explore
+        solve(s, i + 1, curr, count + (s[i] == '(' ? 1 : -1), maxLen);
+
+        //Undo and explore
+        curr.pop_back();
+        solve(s, i + 1, curr, count, maxLen);
+    }
+
+public:
+    vector<string> removeInvalidParentheses(string s) {
+        n = s.length();
+        int maxLen = 0;
+        st.clear();
+
+        string curr = "";
+        solve(s, 0, curr, 0, maxLen);
+
+        return vector<string>(begin(st), end(st));
     }
 };
