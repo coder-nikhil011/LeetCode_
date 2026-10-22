@@ -15,7 +15,7 @@ public:
     }
     vector<int> sortByBits(vector<int>& arr) {
         
-        auto lambda = [&](int &a, int &b) {
+        auto lambda = [&](int &a, int &b) { // the work of & here jitne bhi functions bgera likhe h lambda ke bahar sbhi capture krna 
             
             int count_a = countOneBits(a);
             int count_b = countOneBits(b);
